@@ -5,11 +5,8 @@ from sandbox import get_accounts
 import base64
 import os
 
-
 token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 url = "http://localhost:4001"
-
-_verify = b"A"*64 # 64 bytes since thats the length of a valid signature
 
 client = algod.AlgodClient(token, url)
 
@@ -19,57 +16,39 @@ def demo():
     print("Using {}".format(addr))
 
     # Create app
-    app_id = create_app(addr, pk)
+    app_id = 8
+    #app_id = create_app(addr, pk)
     print("Created App with id: {}".format(app_id))
 
-    # App call with 1 txn
-    try:
-        sp = client.suggested_params()
-        single = assign_group_id([
-            get_app_call(addr, sp, app_id, [_verify, _verify])
-        ])
-        signed_group = [txn.sign(pk) for txn in single]
-        txid = client.send_transactions(signed_group)
-        print("Sending single transaction: {}".format(txid))
 
-        result = wait_for_confirmation(client, txid, 4)
-        print("Result from single: {}".format(result))
-    except Exception as e:
-        print("Failed to call single app call: {}".format(e))
-        
+    sp = client.suggested_params()
+    pooled_group = assign_group_id([
+        get_app_call(addr, sp, app_id, []), 
+    ])
 
-    # App call with 3 txns
-    # Only the first transaction passes the verify args, 
-    # the others are used increase pooled opcode budget
-    try :
-        sp = client.suggested_params()
-        pooled_group = assign_group_id([
-            get_app_call(addr, sp, app_id, [_verify, _verify]), 
-            get_app_call(addr, sp, app_id, []),
-            get_app_call(addr, sp, app_id, [])
-        ])
+    signed_group = [txn.sign(pk) for txn in pooled_group]
+    txid = client.send_transactions(signed_group)
+    print("Sending grouped transaction: {}".format(txid))
 
-        signed_group = [txn.sign(pk) for txn in pooled_group]
-        txid = client.send_transactions(signed_group)
-        print("Sending grouped transaction: {}".format(txid))
-
-        result = wait_for_confirmation(client, txid, 4)
-        print("Success! Confirmed in round: {}".format(result['confirmed-round']))
-    except Exception as e:
-        print("Failed to call grouped app call: {}".format(e))
+    result = wait_for_confirmation(client, txid, 4)
+    print("Result confirmed in rount: {}".format(result['confirmed-round']))
+    print("Logs: ")
+    for log in result['logs']:
+        print_log(log)
 
 
+def print_log(log):
+    strlog = base64.b64decode(log).decode('UTF-8')
+    print("\t{}".format(strlog))
 
 def get_app_call(addr, sp, app_id, args):
     return ApplicationCallTxn(
             addr, sp, app_id, 
             OnComplete.NoOpOC, 
             app_args=args,
-            note=os.urandom(4) #Add random note field to prevent dupe transaction ids
     )
 
 def create_app(addr, pk):
-
     # Get suggested params from network 
     sp = client.suggested_params()
 

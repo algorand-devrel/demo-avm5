@@ -1,9 +1,6 @@
-from pyteal import *
-
-
+from pyteal import Txn, Global, Ed25519Verify, Return, Int, Mode, OnComplete, Cond, compileTeal, Seq, Pop
 
 def approval():
-
     is_app_creator = Txn.sender() == Global.creator_address()
 
     verify = Seq(
@@ -13,7 +10,8 @@ def approval():
                     Txn.sender()
                 )),
                 Int(1)
-            )
+    )
+
 
     return Cond(
         [Txn.application_id() == Int(0),                        Return(Int(1))],
@@ -27,7 +25,6 @@ def approval():
 
 def clear():
     return Return(Int(1))
-
 
 if __name__ == "__main__":
     with open("approval.teal", "w") as f:
