@@ -41,7 +41,6 @@ def approval():
 def clear():
     return Return(Int(1))
 
-
 if __name__ == "__main__":
     with open("approval.teal", "w") as f:
         f.write(compileTeal(approval(), mode=Mode.Application, version=5))
