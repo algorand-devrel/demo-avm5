@@ -59,9 +59,8 @@ def write_dryrun(signed_txn, name, addr):
     # write drr
     file_path = os.path.join(path, name+".msgp")
     data = encoding.msgpack_encode(drr)
-    data = base64.b64encode(data.encode())
     with open(file_path, "wb") as f:
-        f.write(data)
+        f.write(data.encode())
 
     print("Created Dryrun file at {} - goto chrome://inspect".format(file_path))
 
