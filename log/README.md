@@ -3,7 +3,7 @@ AVM 1.0 `log` opcode demo
 
 This demo is meant to illustrate how you can use the new `log` opcode in a Smart Contract to write bytes and read bytes generated during the evaluation of an App Call.
 
-The Smart Contracts are written in [PyTeal](https://developer.algorand.org/docs/get-details/dapps/pyteal/) in `app.py` and are compiled to TEAL. The only function they perform is that durin a NoOp AppCall transaction evaluation, they log the first several lines from the "99 Bottles of Beer" song.  This is done using a For loop and a subroutine to log the bytes. 
+The Smart Contracts are written in [PyTeal](https://developer.algorand.org/docs/get-details/dapps/pyteal/) in `app.py` and are compiled to TEAL. The only function they perform is that during a NoOp AppCall transaction evaluation, they log the first several lines from the "99 Bottles of Beer" song.  This is done using a For loop and a subroutine to log the bytes. 
 
 The `demo.py` file contains logic to deploy the Application from the Smart Contracts on chain, then call the application,  then read and print the logs from the pending transaction pool.
 
