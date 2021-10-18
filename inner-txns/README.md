@@ -3,7 +3,7 @@ AVM 1.0 Inner Transactions Demo
 
 This demo is meant to illustrate how you can use the new Inner Transaction functionality in a Smart Contract.
 
-The Smart Contracts are written in [PyTeal](https://developer.algorand.org/docs/get-details/dapps/pyteal/) in `app.py` and are compiled to TEAL. The only function it performs is that on a call from the application creator, it creates a new ASA with the name specified in the first argument and units specified in the second argument. 
+The Smart Contracts are written in [PyTeal](https://developer.algorand.org/docs/get-details/dapps/pyteal/) in `app.py` and are compiled to TEAL. The only function it performs is that on a call from the application creator, it creates a new ASA with the name specified in the first argument and unitname specified in the second argument and total supply as the third argument. 
 
 The `demo.py` file contains logic to deploy the Application from the Smart Contracts on chain, then call the application,  then read the transaction pool to see the asset id of the created asset.
 

@@ -89,8 +89,8 @@ def write_dryrun(signed_txn, name, addr):
     print("""
       START debugging session
       either use from terminal in this folder or new terminal in same folder
-      `tealdbg debug approval.teal --dryrun-req mydrr.dr`
-    """)
+      `tealdbg debug approval.teal --dryrun-req {}.msgp`
+    """.format(name))
 
 def get_app_call(addr, sp, app_id, args):
     return ApplicationCallTxn(

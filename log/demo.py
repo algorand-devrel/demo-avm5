@@ -64,8 +64,8 @@ def write_dryrun(signed_txn, addr):
     print("""
       START debugging session
       either use from terminal in this folder or new terminal in same folder
-      `tealdbg debug approval.teal --dryrun-req mydrr.dr`
-    """)
+      `tealdbg debug approval.teal --dryrun-req {}.dr`
+    """.format(name))
 
 
 def print_log(log):
