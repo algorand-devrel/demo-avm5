@@ -28,7 +28,7 @@ def demo():
     signed_group = [txn.sign(pk) for txn in pooled_group]
 
 
-    write_dryrun(signed_group, addr)
+    write_dryrun(signed_group, "dryrun", app_id, [addr])
     
 
     txid = client.send_transactions(signed_group)
@@ -41,30 +41,40 @@ def demo():
         print_log(log)
 
 
-def write_dryrun(signed_txn, addr):
+def write_dryrun(signed_txn, name, app_id, addrs):
     path = os.path.dirname(os.path.abspath(__file__))
     # Read in approval teal source
-    src = open(os.path.join(path,'approval.teal')).read()
+    app_src = open(os.path.join(path,'approval.teal')).read()
 
     # Add source
-    sources = [DryrunSource(field_name="approv", source=src)]
+    sources = [
+        DryrunSource(
+            app_index=app_id, 
+            field_name="approv", 
+            source=app_src
+        ), 
+    ]
+
+    # Get account info
+    accounts = [client.account_info(a) for a in addrs]
+    # Get app info
+    app = client.application_info(app_id)
 
     # Create request
-    drr = DryrunRequest(txns=signed_txn, sources=sources, accounts=[addr])
+    drr = DryrunRequest(
+        txns=signed_txn, 
+        sources=sources, 
+        apps=[app], 
+        accounts=accounts
+    )
 
-    # write drr
-    file_path = os.path.join(path, "dryrun.msgp")
+    file_path = os.path.join(path, "{}.msgp".format(name))
     data = encoding.msgpack_encode(drr)
     with open(file_path, "wb") as f:
-        f.write(data.encode())
+        f.write(base64.b64decode(data))
 
-    print("Created Dryrun file at {} - goto chrome://inspect".format(file_path))
+    print("Created Dryrun file at {}".format(file_path))
 
-    print("""
-      START debugging session
-      either use from terminal in this folder or new terminal in same folder
-      `tealdbg debug approval.teal --dryrun-req {}.dr`
-    """.format(name))
 
 
 def print_log(log):
