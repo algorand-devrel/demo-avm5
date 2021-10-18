@@ -1,5 +1,4 @@
-from pyteal import Int, Seq, Txn, Global, compileTeal, Return, OnComplete, Mode, Cond, Btoi, ScratchVar, For, TealType, Log, Concat, Bytes
-from pyteal.ast.subroutine import Subroutine
+from pyteal import Int, Seq, Txn, Global, compileTeal, Return, OnComplete, Mode, Cond, Btoi, ScratchVar, For, TealType, Log, Concat, Bytes, Subroutine
 import os
 
 from util import itoa
