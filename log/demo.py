@@ -1,5 +1,6 @@
 from algosdk import *
 from algosdk.v2client import algod
+from algosdk.v2client.models import DryrunSource, DryrunRequest
 from algosdk.future.transaction import *
 from sandbox import get_accounts
 import base64
@@ -25,6 +26,11 @@ def demo():
     ]
 
     signed_group = [txn.sign(pk) for txn in pooled_group]
+
+
+    write_dryrun(signed_group, addr)
+    
+
     txid = client.send_transactions(signed_group)
     print("Sending grouped transaction: {}".format(txid))
 
@@ -33,6 +39,33 @@ def demo():
     print("Logs: ")
     for log in result['logs']:
         print_log(log)
+
+
+def write_dryrun(signed_txn, addr):
+    path = os.path.dirname(os.path.abspath(__file__))
+    # Read in approval teal source
+    src = open(os.path.join(path,'approval.teal')).read()
+
+    # Add source
+    sources = [DryrunSource(field_name="approv", source=src)]
+
+    # Create request
+    drr = DryrunRequest(txns=signed_txn, sources=sources, accounts=[addr])
+
+    # write drr
+    file_path = os.path.join(path, "dryrun.msgp")
+    data = encoding.msgpack_encode(drr)
+    data = base64.b64encode(data.encode())
+    with open(file_path, "wb") as f:
+        f.write(data)
+
+    print("Created Dryrun file at {} - goto chrome://inspect".format(file_path))
+
+    print("""
+      START debugging session
+      either use from terminal in this folder or new terminal in same folder
+      `tealdbg debug approval.teal --dryrun-req mydrr.dr`
+    """)
 
 
 def print_log(log):
@@ -53,12 +86,12 @@ def create_app(addr, pk):
     path = os.path.dirname(os.path.abspath(__file__))
 
     # Read in approval teal source && compile
-    approval = open(path + '/approval.teal').read()
+    approval = open(os.path.join(path, 'approval.teal')).read()
     app_result = client.compile(approval)
     app_bytes = base64.b64decode(app_result['result'])
     
     # Read in clear teal source && compile 
-    clear = open(path + '/clear.teal').read()
+    clear = open(os.path.join(path, 'clear.teal')).read()
     clear_result = client.compile(clear)
     clear_bytes = base64.b64decode(clear_result['result'])
 
