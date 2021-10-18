@@ -1,0 +1,14 @@
+AVM 1.0 Demos
+-------------
+
+See README in each demo file for details
+
+Install the sandbox from here:
+
+https://github.com/algorand/sandbox
+
+run `./sandbox up dev`
+
+Install `py-algorand-sdk` and `pyteal`
+
+Run any of the demo.py files to see them execute

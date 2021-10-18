@@ -42,7 +42,8 @@ def demo():
 
 
 def get_fund_txn(send, sp, recv, amt):
-    return PaymentTxn(send, sp, recv, amt)
+    sp.fee = 2000
+    return PaymentTxn(send, sp.fee, recv, amt)
 
 def get_app_call(addr, sp, app_id, args):
     return ApplicationCallTxn(
