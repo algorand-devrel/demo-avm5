@@ -3,16 +3,22 @@ from pyteal import Int, Seq, Txn, Global, compileTeal, Return, OnComplete, Mode,
 from util import itoa
 
 
+# The logic for the approval program returned from this function
 def approval():
 
+    # Checks that the sender is the app creator
     is_app_creator = Txn.sender() == Global.creator_address()
 
-
+    # This is the main functionality of this app
     submit_inner_txn = And(
-        is_app_creator,
-        Seq(
-            InnerTxnBuilder.Begin(),
-            InnerTxnBuilder.SetFields({
+        is_app_creator, # First check that the sender is the app creator
+        Seq(            # Seq is used to group a set of operations with only the last returning a value on the stack 
+
+            # Start to build the transaction builder
+            InnerTxnBuilder.Begin(),    
+
+            # This method accepts a dictionary of TxnField to value so all fields may be set 
+            InnerTxnBuilder.SetFields({ 
                 TxnField.type_enum: TxnType.AssetConfig,
                 TxnField.config_asset_name: Txn.application_args[0],
                 TxnField.config_asset_unit_name: Txn.application_args[1],
@@ -23,11 +29,16 @@ def approval():
                 TxnField.config_asset_total: Btoi(Txn.application_args[2]),
                 TxnField.config_asset_decimals: Int(0),
             }),
+
+            # Submit the transaction we just built
             InnerTxnBuilder.Submit(),
+
+            # Return 1 so the outer And evaluates to true
             Int(1)
         )
     )
 
+    # Generic boilerplate router for an application to handle the different OnComplete settings
     return Cond(
         [Txn.application_id() == Int(0),                        Return(Int(1))],
         [Txn.on_completion()  == OnComplete.DeleteApplication,  Return(is_app_creator)],

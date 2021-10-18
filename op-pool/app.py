@@ -1,14 +1,18 @@
 from pyteal import Txn, Global, Ed25519Verify, Return, Int, Mode, OnComplete, Cond, compileTeal, Seq, Pop
 
 def approval():
+    # Checks that the app call sender is the creator of this app
     is_app_creator = Txn.sender() == Global.creator_address()
 
     verify = Seq(
-                Pop(Ed25519Verify(
-                    Txn.application_args[0], 
-                    Txn.application_args[1], 
-                    Txn.sender()
-                )),
+                Pop( # We don't actually care about the result of the verification function, just pop it off the stack
+                    Ed25519Verify( # Calls the ed25519 verify opcode on what is normally some bytes that should be signed and the signature
+                        Txn.application_args[0],  # Bytes signed
+                        Txn.application_args[1],  # Signature
+                        Txn.sender()              # Public key of signer
+                    )
+                ),
+                # Return 1 so the transaction is approved
                 Int(1)
     )
 
