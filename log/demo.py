@@ -16,22 +16,21 @@ def demo():
     print("Using {}".format(addr))
 
     # Create app
-    app_id = 8
-    #app_id = create_app(addr, pk)
+    app_id = create_app(addr, pk)
     print("Created App with id: {}".format(app_id))
 
 
     sp = client.suggested_params()
-    pooled_group = assign_group_id([
+    pooled_group = [
         get_app_call(addr, sp, app_id, []), 
-    ])
+    ]
 
     signed_group = [txn.sign(pk) for txn in pooled_group]
     txid = client.send_transactions(signed_group)
     print("Sending grouped transaction: {}".format(txid))
 
     result = wait_for_confirmation(client, txid, 4)
-    print("Result confirmed in rount: {}".format(result['confirmed-round']))
+    print("Result confirmed in round: {}".format(result['confirmed-round']))
     print("Logs: ")
     for log in result['logs']:
         print_log(log)
@@ -52,13 +51,15 @@ def create_app(addr, pk):
     # Get suggested params from network 
     sp = client.suggested_params()
 
+    path = os.path.dirname(os.path.abspath(__file__))
+
     # Read in approval teal source && compile
-    approval = open('approval.teal').read()
+    approval = open(path + '/approval.teal').read()
     app_result = client.compile(approval)
     app_bytes = base64.b64decode(app_result['result'])
     
     # Read in clear teal source && compile 
-    clear = open('clear.teal').read()
+    clear = open(path + '/clear.teal').read()
     clear_result = client.compile(clear)
     clear_bytes = base64.b64decode(clear_result['result'])
 
