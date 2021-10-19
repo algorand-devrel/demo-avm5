@@ -13,6 +13,7 @@ Technical Details
 -----------------
 
 The `log` opcode has the following technical limits:
+
     - It may only be called in a Smart Contract (as opposed to a Smart Signature)
     - It may only be called in TEAL version  >= 5 
     - It may be called up to 32 times per program execution 
