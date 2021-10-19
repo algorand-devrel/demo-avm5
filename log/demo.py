@@ -21,11 +21,11 @@ def demo():
     print("Created App with id: {}".format(app_id))
 
     sp = client.suggested_params()
-    pooled_group = [
+    txn_group = [
         get_app_call(addr, sp, app_id, []), 
     ]
 
-    signed_group = [txn.sign(pk) for txn in pooled_group]
+    signed_group = [txn.sign(pk) for txn in txn_group]
 
 
     write_dryrun(signed_group, "dryrun", app_id, [addr])

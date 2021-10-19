@@ -25,12 +25,12 @@ def demo():
     print("Application Address: {}".format(app_addr))
 
     sp = client.suggested_params()
-    pooled_group = assign_group_id([
+    txn_group = assign_group_id([
         get_fund_txn(addr, sp, app_addr, 500000),
         get_app_call(addr, sp, app_id, ["inner-txn-demo", "itxnd", (1000).to_bytes(8,'big')]), 
     ])
 
-    signed_group = [txn.sign(pk) for txn in pooled_group]
+    signed_group = [txn.sign(pk) for txn in txn_group]
 
     write_dryrun(signed_group, "dryrun", app_id, [addr, app_addr])
 
