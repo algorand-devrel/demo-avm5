@@ -9,10 +9,9 @@ Install the sandbox from [here](https://github.com/algorand/sandbox)
 
 > *Note*: These demos rely on a default unencrypted wallet in the kmd so only release/beta/nightly/dev sandbox configs will work
 
-run `./sandbox up dev` to start the sandbox in dev mode (doesn't wait 4.5s for blocks)
+In the sandbox directory run `./sandbox up dev` to start the sandbox in dev mode (doesn't wait 4.5s for blocks)
 
-ex of use:
-
+In the demo-avm1 directory
 ```sh
 cd op-pool # Or any of the examples
 python app.py # Generates application.teal and clear.teal
