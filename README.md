@@ -11,7 +11,7 @@ Install the sandbox from [here](https://github.com/algorand/sandbox)
 
 In the sandbox directory run `./sandbox up dev` to start the sandbox in dev mode (doesn't wait 4.5s for blocks)
 
-In the demo-avm1 directory
+In the demo-avm5 directory
 ```sh
 cd op-pool # Or any of the examples
 python app.py # Generates application.teal and clear.teal
