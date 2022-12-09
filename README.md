@@ -1,4 +1,4 @@
-AVM 1.0 Demos
+AVM 5 Demos
 -------------
 
 See README in each demo file for details
